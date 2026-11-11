@@ -1,0 +1,18 @@
+# Ganchos locais: conveniência para falhar cedo; o CI executa as mesmas verificações (D33).
+pre-commit:
+  parallel: true
+  commands:
+    spectral:
+      glob: 'openapi/**/*.yaml'
+      run: npm run --silent lint:spectral
+    prettier:
+      glob: '*.{yaml,yml,json,md}'
+      run: npx --no-install prettier --check {staged_files}
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no-install commitlint --edit {1}
+pre-push:
+  commands:
+    geracao:
+      run: npm run bundle && (cd ts && npm run build && npm run typecheck)

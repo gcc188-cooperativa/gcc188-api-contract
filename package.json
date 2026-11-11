@@ -1,0 +1,26 @@
+{
+  "name": "gcc188-api-contract-tooling",
+  "private": true,
+  "description": "Ferramentas de lint, bundle e mock do contrato da API (não é publicado).",
+  "scripts": {
+    "lint": "npm run lint:spectral && npm run lint:redocly && npm run format:check",
+    "lint:spectral": "npm run --silent bundle && spectral lint build/openapi.yaml --ruleset .spectral.yaml --fail-severity=warn",
+    "lint:redocly": "redocly lint openapi/openapi.yaml",
+    "format": "prettier --write \"openapi/**/*.yaml\" \"*.{json,md,yaml}\" \".github/**/*.yml\"",
+    "format:check": "prettier --check \"openapi/**/*.yaml\" \"*.{json,md,yaml}\" \".github/**/*.yml\"",
+    "bundle": "redocly bundle openapi/openapi.yaml -o build/openapi.yaml",
+    "mock": "npm run bundle && prism mock -h 127.0.0.1 -p 4010 --errors build/openapi.yaml",
+    "mock:smoke": "bash scripts/mock-smoke.sh",
+    "breaking": "bash scripts/check-breaking.sh",
+    "prepare": "lefthook install || true"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@redocly/cli": "^1.25.0",
+    "@stoplight/prism-cli": "^5.12.0",
+    "@stoplight/spectral-cli": "^6.13.0",
+    "lefthook": "^1.8.0",
+    "prettier": "^3.3.0"
+  }
+}

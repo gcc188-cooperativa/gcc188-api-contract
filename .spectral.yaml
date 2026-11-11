@@ -1,0 +1,40 @@
+# Regras de estilo e completude do contrato (D08).
+extends: [spectral:oas]
+rules:
+  info-contact: off
+  # Falso positivo do Spectral: `examples` de JSON Schema (OpenAPI 3.1) é um array de valores.
+  oas3-examples-value-or-externalValue: off
+  operation-description: error
+  operation-operationId: error
+  operation-tags: error
+  operation-tag-defined: error
+  operationid-camel-case:
+    description: 'operationId em camelCase, com verbo e recurso, por exemplo aprovarContrato.'
+    severity: error
+    given: $.paths[*][*].operationId
+    then: { function: casing, functionOptions: { type: camel } }
+  propriedades-snake-case:
+    description: Campos JSON em snake_case, iguais às colunas do banco (D38).
+    severity: error
+    given: $..properties.*~
+    then: { function: casing, functionOptions: { type: snake } }
+  caminhos-minusculos-kebab:
+    description: Rotas em minúsculas, com hífen; parâmetros `{id}`.
+    severity: error
+    given: $.paths[*]~
+    then: { function: pattern, functionOptions: { match: '^(/[a-z0-9-]+|/\{id\})+$' } }
+  recurso-tem-exemplo:
+    description: Todo recurso do domínio tem ao menos um exemplo (D08).
+    severity: error
+    given: $.components.schemas[Usuario,Cooperando,Cliente,Contrato,Pagamento,Despesa]
+    then: { field: examples, function: truthy }
+  erro-tem-exemplo:
+    description: Toda resposta de erro tem exemplo.
+    severity: error
+    given: $.components.responses[*].content[*]
+    then: { field: examples, function: truthy }
+  erros-em-problem-json:
+    description: Erros usam application/problem+json (RFC 9457).
+    severity: error
+    given: $.components.responses[*].content
+    then: { function: schema, functionOptions: { schema: { required: [application/problem+json] } } }

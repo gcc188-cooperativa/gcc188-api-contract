@@ -1,0 +1,9 @@
+node_modules/
+build/
+ts/dist/
+ts/node_modules/
+java/build/
+java/.gradle/
+java/.idea/
+*.log
+.env
