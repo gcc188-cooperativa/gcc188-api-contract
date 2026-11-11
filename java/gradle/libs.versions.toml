@@ -1,14 +1,16 @@
 # Versões fixadas (RNF-26). A linha do Spring Boot deve ser confirmada no marco M0 (PD12).
 [versions]
-openapiGenerator = "7.16.0"
+openapiGenerator = "7.27.0"
 springBoot = "4.0.0"
 
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
 spring-web = { module = "org.springframework:spring-web" }
+spring-context = { module = "org.springframework:spring-context" }
 jakarta-validation = { module = "jakarta.validation:jakarta.validation-api" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
 jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api" }
+jakarta-servlet = { module = "jakarta.servlet:jakarta.servlet-api" }
 
 [plugins]
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGenerator" }
