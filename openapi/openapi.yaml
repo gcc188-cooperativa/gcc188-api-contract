@@ -1,13 +1,14 @@
-# Ponto de entrada do contrato (OpenAPI 3.1). Um arquivo por recurso em paths/; esquemas reutilizáveis em components/.
 openapi: 3.1.0
 info:
   title: API da Cooperativa de Transportes
-  version: 0.1.0
+  version: 0.2.0
   summary: Contratos, pagamentos, cooperandos e despesas.
-  description:
-    Contrato da API REST do sistema de gestão da cooperativa (fonte de verdade — D06). Autenticação por
-    cookies `HttpOnly`; requisições de escrita exigem `X-XSRF-TOKEN` igual ao cookie `XSRF-TOKEN`. JSON em `snake_case`;
-    valores monetários como número decimal com duas casas; erros em `application/problem+json` (RFC 9457).
+  description: >-
+    Contrato da API REST do sistema de gestão da cooperativa (fonte de verdade —
+    D06). Autenticação por cookies `HttpOnly`; requisições de escrita exigem
+    `X-XSRF-TOKEN` igual ao cookie `XSRF-TOKEN`. JSON em `snake_case`; valores
+    monetários como número decimal com duas casas; erros em
+    `application/problem+json` (RFC 9457).
   license:
     name: Proprietary
     identifier: LicenseRef-Proprietary
@@ -112,7 +113,9 @@ components:
       type: apiKey
       in: cookie
       name: ACCESS_TOKEN
-      description: JWT de acesso (15 min), cookie HttpOnly; Secure; SameSite=Strict; Path=/api.
+      description: >-
+        JWT de acesso (15 min), cookie HttpOnly; Secure; SameSite=Strict;
+        Path=/api.
     refreshCookie:
       type: apiKey
       in: cookie
@@ -122,7 +125,9 @@ components:
       type: apiKey
       in: header
       name: X-XSRF-TOKEN
-      description: Deve ser igual ao cookie XSRF-TOKEN em POST, PUT, PATCH e DELETE autenticados (CA-11).
+      description: >-
+        Deve ser igual ao cookie XSRF-TOKEN em POST, PUT, PATCH e DELETE
+        autenticados (CA-11).
   parameters:
     Id:
       $ref: components/parameters/comuns.yaml#/Id
