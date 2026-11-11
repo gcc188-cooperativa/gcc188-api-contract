@@ -1,0 +1,62 @@
+# Release Please abre/atualiza o PR de release a cada push em master. Ao integrá-lo, cria a tag vX.Y.Z
+# e a release; os pacotes são publicados neste mesmo workflow (eventos criados com GITHUB_TOKEN
+# não disparam outros workflows, por isso não há um workflow separado em `release: published`).
+name: release
+on:
+  push:
+    branches: [master]
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+  publish-maven:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.release-please.outputs.tag_name }}' }
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '9.1.0' }
+      - run: if [ -x ./gradlew ]; then ./gradlew --no-daemon publish; else gradle --no-daemon publish; fi
+        working-directory: java
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish-npm:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.release-please.outputs.tag_name }}' }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://npm.pkg.github.com
+      - name: Escopo do pacote = organização do GitHub (PD01)
+        working-directory: ts
+        run: npm pkg set name="@${GITHUB_REPOSITORY_OWNER,,}/api-contract"
+      - run: npm ci && npm run build
+        working-directory: ts
+      - run: npm publish
+        working-directory: ts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

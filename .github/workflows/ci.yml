@@ -1,0 +1,71 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+  packages: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  lint:
+    name: Spectral, Redocly, Prettier, yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - run: pip install yamllint && yamllint .
+      - run: npm run lint
+  breaking:
+    name: oasdiff (mudanças incompatíveis)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - name: Instalar oasdiff
+        run: curl -fsSL https://raw.githubusercontent.com/oasdiff/oasdiff/main/install.sh | sh
+      - run: npm run breaking
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+  java:
+    name: Geração Java compila
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '9.1.0' }
+      - run: if [ -x ./gradlew ]; then ./gradlew --no-daemon build; else gradle --no-daemon build; fi
+        working-directory: java
+  typescript:
+    name: Tipos TypeScript (tsc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm, cache-dependency-path: ts/package-lock.json }
+      - run: npm ci
+        working-directory: ts
+      - run: npm run build && npm run typecheck
+        working-directory: ts
+  mock-smoke:
+    name: Prism (mock-smoke)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - run: npm run mock:smoke
