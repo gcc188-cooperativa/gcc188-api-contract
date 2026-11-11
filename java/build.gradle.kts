@@ -19,9 +19,11 @@ repositories { mavenCentral() }
 dependencies {
     api(platform(libs.spring.boot.dependencies))
     api(libs.spring.web)
+    api(libs.spring.context)
     api(libs.jakarta.validation)
     api(libs.jackson.annotations)
     api(libs.jakarta.annotation)
+    api(libs.jakarta.servlet)
 }
 
 val bundled = rootProject.layout.projectDirectory.file("../build/openapi.yaml")
