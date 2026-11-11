@@ -15,12 +15,12 @@
     "prepare": "lefthook install || true"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@redocly/cli": "^1.25.0",
-    "@stoplight/prism-cli": "^5.12.0",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@redocly/cli": "^2.76.0",
+    "@stoplight/prism-cli": "^5.16.0",
     "@stoplight/spectral-cli": "^6.13.0",
-    "lefthook": "^1.8.0",
+    "lefthook": "^2.2.2",
     "prettier": "^3.3.0"
   }
 }
