@@ -1,0 +1,131 @@
+cooperandos_id_extrato:
+  get:
+    tags:
+      - relatorios
+    summary: Extrato do cooperando no período
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      O motorista consulta apenas o próprio extrato (RN10).'
+    operationId: obterExtratoCooperando
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+      - name: data_inicio
+        in: query
+        required: true
+        description: Início do período (inclusive).
+        schema:
+          type: string
+          format: date
+      - name: data_fim
+        in: query
+        required: true
+        description: Fim do período (inclusive).
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/relatorios.yaml#/Extrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+relatorios_resumo_financeiro:
+  get:
+    tags:
+      - relatorios
+    summary: Resumo financeiro da cooperativa
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO.'
+    operationId: obterResumoFinanceiro
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+    parameters:
+      - name: data_inicio
+        in: query
+        required: true
+        description: Início do período (inclusive).
+        schema:
+          type: string
+          format: date
+      - name: data_fim
+        in: query
+        required: true
+        description: Fim do período (inclusive).
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/relatorios.yaml#/ResumoFinanceiro
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+relatorios_inadimplencia:
+  get:
+    tags:
+      - relatorios
+    summary: Pagamentos em atraso agrupados
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO.'
+    operationId: obterInadimplencia
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/relatorios.yaml#/Inadimplencia
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+painel_indicadores:
+  get:
+    tags:
+      - painel
+    summary: Indicadores do painel conforme o papel
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.'
+    operationId: obterIndicadores
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/relatorios.yaml#/Indicadores
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden

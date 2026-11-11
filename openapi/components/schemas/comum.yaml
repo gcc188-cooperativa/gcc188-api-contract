@@ -1,0 +1,42 @@
+ProblemDetail:
+  type: object
+  description: Corpo de erro conforme a RFC 9457 (application/problem+json).
+  required:
+    - title
+    - status
+  properties:
+    type:
+      type: string
+      format: uri-reference
+      description: URI do tipo do problema; ausente equivale a about:blank.
+    title:
+      type: string
+    status:
+      type: integer
+      minimum: 100
+      maximum: 599
+    detail:
+      type: string
+    instance:
+      type: string
+    campos_invalidos:
+      type: array
+      items:
+        $ref: '#/CampoInvalido'
+    codigo_regra:
+      type: string
+      description: Código da regra de negócio violada, por exemplo RN03.
+      pattern: ^RN[0-9]{2}$|^[A-Z_]+$
+    correlation_id:
+      type: string
+      description: Identificador de correlação, também presente nos logs.
+CampoInvalido:
+  type: object
+  required:
+    - campo
+    - mensagem
+  properties:
+    campo:
+      type: string
+    mensagem:
+      type: string

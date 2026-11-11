@@ -1,0 +1,254 @@
+# Ponto de entrada do contrato (OpenAPI 3.1). Um arquivo por recurso em paths/; esquemas reutilizáveis em components/.
+openapi: 3.1.0
+info:
+  title: API da Cooperativa de Transportes
+  version: 0.1.0
+  summary: Contratos, pagamentos, cooperandos e despesas.
+  description:
+    Contrato da API REST do sistema de gestão da cooperativa (fonte de verdade — D06). Autenticação por
+    cookies `HttpOnly`; requisições de escrita exigem `X-XSRF-TOKEN` igual ao cookie `XSRF-TOKEN`. JSON em `snake_case`;
+    valores monetários como número decimal com duas casas; erros em `application/problem+json` (RFC 9457).
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+servers:
+  - url: /api/v1
+    description: Mesma origem do front-end, atrás do proxy reverso (D28).
+security:
+  - cookieAuth: []
+tags:
+  - name: autenticacao
+    description: Login, renovação, logout e sessão (cookies HttpOnly, CSRF).
+  - name: usuarios
+    description: CRUD de usuários (módulo A).
+  - name: cooperandos
+    description: Motoristas associados.
+  - name: clientes
+    description: Contratantes dos serviços.
+  - name: contratos
+    description: Contratos, máquina de estados (RN12) e cronograma.
+  - name: pagamentos
+    description: Baixa, repasse e estorno.
+  - name: despesas
+    description: Despesas da cooperativa e dos cooperandos.
+  - name: relatorios
+    description: Extrato, resumo financeiro e inadimplência.
+  - name: painel
+    description: Indicadores por papel.
+paths:
+  /auth/login:
+    $ref: paths/autenticacao.yaml#/auth_login
+  /auth/refresh:
+    $ref: paths/autenticacao.yaml#/auth_refresh
+  /auth/logout:
+    $ref: paths/autenticacao.yaml#/auth_logout
+  /auth/me:
+    $ref: paths/autenticacao.yaml#/auth_me
+  /auth/alterar-senha:
+    $ref: paths/autenticacao.yaml#/auth_alterar_senha
+  /usuarios:
+    $ref: paths/usuarios.yaml#/usuarios
+  /usuarios/{id}:
+    $ref: paths/usuarios.yaml#/usuarios_id
+  /usuarios/{id}/situacao:
+    $ref: paths/usuarios.yaml#/usuarios_id_situacao
+  /usuarios/{id}/redefinicao-senha:
+    $ref: paths/usuarios.yaml#/usuarios_id_redefinicao_senha
+  /cooperandos:
+    $ref: paths/cooperandos.yaml#/cooperandos
+  /cooperandos/{id}:
+    $ref: paths/cooperandos.yaml#/cooperandos_id
+  /cooperandos/{id}/situacao:
+    $ref: paths/cooperandos.yaml#/cooperandos_id_situacao
+  /clientes:
+    $ref: paths/clientes.yaml#/clientes
+  /clientes/{id}:
+    $ref: paths/clientes.yaml#/clientes_id
+  /clientes/{id}/situacao:
+    $ref: paths/clientes.yaml#/clientes_id_situacao
+  /contratos:
+    $ref: paths/contratos.yaml#/contratos
+  /contratos/{id}:
+    $ref: paths/contratos.yaml#/contratos_id
+  /contratos/{id}/submissao:
+    $ref: paths/contratos.yaml#/contratos_id_submissao
+  /contratos/{id}/aprovacao:
+    $ref: paths/contratos.yaml#/contratos_id_aprovacao
+  /contratos/{id}/reprovacao:
+    $ref: paths/contratos.yaml#/contratos_id_reprovacao
+  /contratos/{id}/encerramento:
+    $ref: paths/contratos.yaml#/contratos_id_encerramento
+  /contratos/{id}/cancelamento:
+    $ref: paths/contratos.yaml#/contratos_id_cancelamento
+  /contratos/{id}/pagamentos:
+    $ref: paths/contratos.yaml#/contratos_id_pagamentos
+  /pagamentos:
+    $ref: paths/pagamentos.yaml#/pagamentos
+  /pagamentos/{id}:
+    $ref: paths/pagamentos.yaml#/pagamentos_id
+  /pagamentos/{id}/baixa:
+    $ref: paths/pagamentos.yaml#/pagamentos_id_baixa
+  /pagamentos/{id}/repasse:
+    $ref: paths/pagamentos.yaml#/pagamentos_id_repasse
+  /pagamentos/{id}/estorno:
+    $ref: paths/pagamentos.yaml#/pagamentos_id_estorno
+  /despesas:
+    $ref: paths/despesas.yaml#/despesas
+  /despesas/totais:
+    $ref: paths/despesas.yaml#/despesas_totais
+  /despesas/{id}:
+    $ref: paths/despesas.yaml#/despesas_id
+  /cooperandos/{id}/extrato:
+    $ref: paths/relatorios.yaml#/cooperandos_id_extrato
+  /relatorios/resumo-financeiro:
+    $ref: paths/relatorios.yaml#/relatorios_resumo_financeiro
+  /relatorios/inadimplencia:
+    $ref: paths/relatorios.yaml#/relatorios_inadimplencia
+  /painel/indicadores:
+    $ref: paths/relatorios.yaml#/painel_indicadores
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: ACCESS_TOKEN
+      description: JWT de acesso (15 min), cookie HttpOnly; Secure; SameSite=Strict; Path=/api.
+    refreshCookie:
+      type: apiKey
+      in: cookie
+      name: REFRESH_TOKEN
+      description: Refresh token rotativo (7 dias), cookie HttpOnly; Path=/api/v1/auth.
+    csrfHeader:
+      type: apiKey
+      in: header
+      name: X-XSRF-TOKEN
+      description: Deve ser igual ao cookie XSRF-TOKEN em POST, PUT, PATCH e DELETE autenticados (CA-11).
+  parameters:
+    Id:
+      $ref: components/parameters/comuns.yaml#/Id
+    Page:
+      $ref: components/parameters/comuns.yaml#/Page
+    Size:
+      $ref: components/parameters/comuns.yaml#/Size
+    Sort:
+      $ref: components/parameters/comuns.yaml#/Sort
+  responses:
+    BadRequest:
+      $ref: components/responses/erros.yaml#/BadRequest
+    Unauthorized:
+      $ref: components/responses/erros.yaml#/Unauthorized
+    Forbidden:
+      $ref: components/responses/erros.yaml#/Forbidden
+    NotFound:
+      $ref: components/responses/erros.yaml#/NotFound
+    Conflict:
+      $ref: components/responses/erros.yaml#/Conflict
+    UnprocessableEntity:
+      $ref: components/responses/erros.yaml#/UnprocessableEntity
+  schemas:
+    ProblemDetail:
+      $ref: components/schemas/comum.yaml#/ProblemDetail
+    CampoInvalido:
+      $ref: components/schemas/comum.yaml#/CampoInvalido
+    LoginRequest:
+      $ref: components/schemas/auth.yaml#/LoginRequest
+    AlterarSenhaRequest:
+      $ref: components/schemas/auth.yaml#/AlterarSenhaRequest
+    SessaoUsuario:
+      $ref: components/schemas/auth.yaml#/SessaoUsuario
+    Papel:
+      $ref: components/schemas/usuarios.yaml#/Papel
+    Usuario:
+      $ref: components/schemas/usuarios.yaml#/Usuario
+    UsuarioCriacao:
+      $ref: components/schemas/usuarios.yaml#/UsuarioCriacao
+    UsuarioAtualizacao:
+      $ref: components/schemas/usuarios.yaml#/UsuarioAtualizacao
+    SituacaoRequest:
+      $ref: components/schemas/usuarios.yaml#/SituacaoRequest
+    RedefinicaoSenhaRequest:
+      $ref: components/schemas/usuarios.yaml#/RedefinicaoSenhaRequest
+    UsuarioPagina:
+      $ref: components/schemas/usuarios.yaml#/UsuarioPagina
+    CooperandoResumo:
+      $ref: components/schemas/cooperandos.yaml#/CooperandoResumo
+    Cooperando:
+      $ref: components/schemas/cooperandos.yaml#/Cooperando
+    CooperandoDados:
+      $ref: components/schemas/cooperandos.yaml#/CooperandoDados
+    CooperandoCriacao:
+      $ref: components/schemas/cooperandos.yaml#/CooperandoCriacao
+    CooperandoPagina:
+      $ref: components/schemas/cooperandos.yaml#/CooperandoPagina
+    ClienteResumo:
+      $ref: components/schemas/clientes.yaml#/ClienteResumo
+    Cliente:
+      $ref: components/schemas/clientes.yaml#/Cliente
+    ClienteDados:
+      $ref: components/schemas/clientes.yaml#/ClienteDados
+    ClienteCriacao:
+      $ref: components/schemas/clientes.yaml#/ClienteCriacao
+    ClientePagina:
+      $ref: components/schemas/clientes.yaml#/ClientePagina
+    PagamentoStatus:
+      $ref: components/schemas/pagamentos.yaml#/PagamentoStatus
+    Pagamento:
+      $ref: components/schemas/pagamentos.yaml#/Pagamento
+    BaixaRequest:
+      $ref: components/schemas/pagamentos.yaml#/BaixaRequest
+    RepasseRequest:
+      $ref: components/schemas/pagamentos.yaml#/RepasseRequest
+    EstornoRequest:
+      $ref: components/schemas/pagamentos.yaml#/EstornoRequest
+    PagamentoPagina:
+      $ref: components/schemas/pagamentos.yaml#/PagamentoPagina
+    Modalidade:
+      $ref: components/schemas/contratos.yaml#/Modalidade
+    TaxaTipo:
+      $ref: components/schemas/contratos.yaml#/TaxaTipo
+    ContratoStatus:
+      $ref: components/schemas/contratos.yaml#/ContratoStatus
+    ContratoEntrada:
+      $ref: components/schemas/contratos.yaml#/ContratoEntrada
+    ContratoAtualizacao:
+      $ref: components/schemas/contratos.yaml#/ContratoAtualizacao
+    Contrato:
+      $ref: components/schemas/contratos.yaml#/Contrato
+    ContratoDetalhe:
+      $ref: components/schemas/contratos.yaml#/ContratoDetalhe
+    ReprovacaoRequest:
+      $ref: components/schemas/contratos.yaml#/ReprovacaoRequest
+    ContratoPagina:
+      $ref: components/schemas/contratos.yaml#/ContratoPagina
+    Origem:
+      $ref: components/schemas/despesas.yaml#/Origem
+    Categoria:
+      $ref: components/schemas/despesas.yaml#/Categoria
+    DespesaEntrada:
+      $ref: components/schemas/despesas.yaml#/DespesaEntrada
+    DespesaAtualizacao:
+      $ref: components/schemas/despesas.yaml#/DespesaAtualizacao
+    Despesa:
+      $ref: components/schemas/despesas.yaml#/Despesa
+    DespesaPagina:
+      $ref: components/schemas/despesas.yaml#/DespesaPagina
+    TotalPorCategoria:
+      $ref: components/schemas/despesas.yaml#/TotalPorCategoria
+    DespesaTotais:
+      $ref: components/schemas/despesas.yaml#/DespesaTotais
+    ExtratoPagamento:
+      $ref: components/schemas/relatorios.yaml#/ExtratoPagamento
+    Extrato:
+      $ref: components/schemas/relatorios.yaml#/Extrato
+    ResumoFinanceiro:
+      $ref: components/schemas/relatorios.yaml#/ResumoFinanceiro
+    InadimplenciaItemCliente:
+      $ref: components/schemas/relatorios.yaml#/InadimplenciaItemCliente
+    InadimplenciaItemCooperando:
+      $ref: components/schemas/relatorios.yaml#/InadimplenciaItemCooperando
+    Inadimplencia:
+      $ref: components/schemas/relatorios.yaml#/Inadimplencia
+    IndicadorQuantidadeValor:
+      $ref: components/schemas/relatorios.yaml#/IndicadorQuantidadeValor
+    Indicadores:
+      $ref: components/schemas/relatorios.yaml#/Indicadores

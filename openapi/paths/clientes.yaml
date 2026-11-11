@@ -1,0 +1,198 @@
+clientes:
+  post:
+    tags:
+      - clientes
+    summary: Cadastra cliente e usuário (transação)
+    description: '**Papéis:** ADMINISTRADOR.'
+    operationId: criarCliente
+    x-papeis:
+      - ADMINISTRADOR
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/clientes.yaml#/ClienteCriacao
+    responses:
+      '201':
+        description: Cliente criado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/clientes.yaml#/Cliente
+        headers:
+          Location:
+            description: URI do recurso criado.
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  get:
+    tags:
+      - clientes
+    summary: Lista clientes
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      Ao motorista, somente identificação. Campos de `sort`: `nome`, `documento`.'
+    operationId: listarClientes
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - name: nome
+        in: query
+        required: false
+        description: Busca parcial por nome.
+        schema:
+          type: string
+      - name: documento
+        in: query
+        required: false
+        description: Documento exato (somente dígitos).
+        schema:
+          type: string
+      - name: ativo
+        in: query
+        required: false
+        description: Situação.
+        schema:
+          type: boolean
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/clientes.yaml#/ClientePagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+clientes_id:
+  get:
+    tags:
+      - clientes
+    summary: Consulta cliente
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      O cliente consulta apenas o próprio (RN10).'
+    operationId: obterCliente
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/clientes.yaml#/Cliente
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+  put:
+    tags:
+      - clientes
+    summary: Atualiza cliente
+    description: '**Papéis:** ADMINISTRADOR.'
+    operationId: atualizarCliente
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/clientes.yaml#/ClienteDados
+    responses:
+      '200':
+        description: Cliente atualizado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/clientes.yaml#/Cliente
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+clientes_id_situacao:
+  patch:
+    tags:
+      - clientes
+    summary: Inativa ou reativa cliente
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Cliente inativo não pode ser vinculado a novos contratos (RN13).'
+    operationId: alterarSituacaoCliente
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/usuarios.yaml#/SituacaoRequest
+    responses:
+      '200':
+        description: Situação alterada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/clientes.yaml#/Cliente
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+    security:
+      - cookieAuth: []
+        csrfHeader: []

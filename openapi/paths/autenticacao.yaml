@@ -1,0 +1,151 @@
+auth_login:
+  post:
+    tags:
+      - autenticacao
+    summary: Autentica por e-mail e senha
+    description: '**Papéis:** público.
+
+
+      Mensagem idêntica para e-mail inexistente, senha errada e conta bloqueada (5 falhas consecutivas bloqueiam
+      por 15 min). Não exige `X-XSRF-TOKEN`.'
+    operationId: login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/LoginRequest
+    responses:
+      '200':
+        description: Autenticado; cookies definidos.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/SessaoUsuario
+        headers:
+          Set-Cookie:
+            description: Cookies `ACCESS_TOKEN`, `REFRESH_TOKEN` (HttpOnly) e `XSRF-TOKEN` (legível pelo JavaScript).
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+    security: []
+auth_refresh:
+  post:
+    tags:
+      - autenticacao
+    summary: Renova o par de cookies
+    description: '**Papéis:** público.
+
+
+      Usa o cookie `REFRESH_TOKEN` (rotativo, 7 dias). O reuso de um refresh token já usado responde 401 e revoga
+      toda a família (CA-12).'
+    operationId: renovarSessao
+    responses:
+      '200':
+        description: Cookies renovados.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/SessaoUsuario
+        headers:
+          Set-Cookie:
+            description: Cookies `ACCESS_TOKEN`, `REFRESH_TOKEN` (HttpOnly) e `XSRF-TOKEN` (legível pelo JavaScript).
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+    security:
+      - refreshCookie: []
+auth_logout:
+  post:
+    tags:
+      - autenticacao
+    summary: Encerra a sessão e revoga o refresh token
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.'
+    operationId: encerrarSessao
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    responses:
+      '204':
+        description: Operação concluída sem corpo.
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+auth_me:
+  get:
+    tags:
+      - autenticacao
+    summary: Usuário autenticado, papel e vínculo
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      A SPA chama ao iniciar, pois o token não é legível pelo JavaScript.'
+    operationId: obterSessao
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/SessaoUsuario
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+auth_alterar_senha:
+  post:
+    tags:
+      - autenticacao
+    summary: Altera a própria senha
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      Enquanto `deve_trocar_senha` for verdadeiro, somente esta operação e o logout são aceitos; as demais respondem
+      403 (CA-15).'
+    operationId: alterarSenha
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/AlterarSenhaRequest
+    responses:
+      '204':
+        description: Operação concluída sem corpo.
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []

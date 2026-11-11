@@ -1,0 +1,221 @@
+pagamentos:
+  get:
+    tags:
+      - pagamentos
+    summary: Lista pagamentos
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      Limitado ao escopo do papel (RN10). Campos de `sort`: `data_vencimento`, `status`, `valor_bruto`.'
+    operationId: listarPagamentos
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - name: contrato_id
+        in: query
+        required: false
+        description: Filtra por contrato.
+        schema:
+          type: integer
+          format: int64
+      - name: status
+        in: query
+        required: false
+        description: Situação do pagamento.
+        schema:
+          $ref: ../components/schemas/pagamentos.yaml#/PagamentoStatus
+      - name: vencimento_de
+        in: query
+        required: false
+        description: Vencimento a partir de.
+        schema:
+          type: string
+          format: date
+      - name: vencimento_ate
+        in: query
+        required: false
+        description: Vencimento até.
+        schema:
+          type: string
+          format: date
+      - name: em_atraso
+        in: query
+        required: false
+        description: Se verdadeiro, somente PREVISTO com vencimento anterior a hoje (fuso America/Sao_Paulo; P5).
+        schema:
+          type: boolean
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/PagamentoPagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+pagamentos_id:
+  get:
+    tags:
+      - pagamentos
+    summary: Consulta pagamento
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.'
+    operationId: obterPagamento
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/Pagamento
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+pagamentos_id_baixa:
+  post:
+    tags:
+      - pagamentos
+    summary: PREVISTO → PAGO
+    description: '**Papéis:** FINANCEIRO.
+
+
+      Só contratos ATIVOS aceitam baixa (RN06). Registra usuário e instante (RN15).'
+    operationId: registrarBaixa
+    x-papeis:
+      - FINANCEIRO
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/pagamentos.yaml#/BaixaRequest
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/Pagamento
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+pagamentos_id_repasse:
+  post:
+    tags:
+      - pagamentos
+    summary: PAGO → REPASSADO
+    description: '**Papéis:** FINANCEIRO.
+
+
+      Transfere o `valor_liquido` registrado (RN07). Sobre pagamento PREVISTO responde 409 (CA-03).'
+    operationId: registrarRepasse
+    x-papeis:
+      - FINANCEIRO
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/pagamentos.yaml#/RepasseRequest
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/Pagamento
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+pagamentos_id_estorno:
+  post:
+    tags:
+      - pagamentos
+    summary: PAGO → PREVISTO
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO.
+
+
+      Somente baixa ainda não repassada.'
+    operationId: estornarBaixa
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/pagamentos.yaml#/EstornoRequest
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/Pagamento
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []

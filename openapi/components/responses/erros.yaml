@@ -1,0 +1,54 @@
+BadRequest:
+  description: Requisição malformada ou campo com formato inválido (`campos_invalidos`).
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaValidacao400
+Unauthorized:
+  description: Não autenticado, token expirado ou credenciais inválidas.
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaNaoAutenticado401
+Forbidden:
+  description: Papel sem permissão, ausência do cabeçalho `X-XSRF-TOKEN` ou troca de senha pendente.
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaAcessoNegado403
+NotFound:
+  description: Recurso inexistente ou fora do escopo do usuário (RN10); indistinguíveis.
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaNaoEncontrado404
+Conflict:
+  description: Transição de estado inválida, divergência de `versao` ou unicidade violada.
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaConflito409
+UnprocessableEntity:
+  description: Regra de negócio violada (`codigo_regra`).
+  content:
+    application/problem+json:
+      schema:
+        $ref: ../schemas/comum.yaml#/ProblemDetail
+      examples:
+        exemplo:
+          $ref: ../examples/problemas.yaml#/ProblemaRegraNegocio422

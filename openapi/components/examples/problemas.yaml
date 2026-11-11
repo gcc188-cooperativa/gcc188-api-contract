@@ -1,0 +1,56 @@
+ProblemaValidacao400:
+  summary: Campo inválido
+  value:
+    type: about:blank
+    title: Requisição inválida
+    status: 400
+    detail: Um ou mais campos são inválidos.
+    campos_invalidos:
+      - campo: email
+        mensagem: deve ser um endereço de e-mail válido
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10
+ProblemaNaoAutenticado401:
+  summary: Não autenticado
+  value:
+    type: about:blank
+    title: Não autenticado
+    status: 401
+    detail: Autenticação necessária.
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10
+ProblemaAcessoNegado403:
+  summary: Acesso negado
+  value:
+    type: about:blank
+    title: Acesso negado
+    status: 403
+    detail: Você não tem permissão para esta operação.
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10
+ProblemaNaoEncontrado404:
+  summary: Não encontrado
+  value:
+    type: about:blank
+    title: Recurso não encontrado
+    status: 404
+    detail: Recurso não encontrado.
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10
+ProblemaConflito409:
+  summary: Transição inválida
+  value:
+    type: about:blank
+    title: Conflito de estado
+    status: 409
+    detail: O pagamento não está PAGO; repasse não permitido.
+    codigo_regra: RN07
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10
+ProblemaRegraNegocio422:
+  summary: Taxa maior que o bruto
+  value:
+    type: about:blank
+    title: Regra de negócio violada
+    status: 422
+    detail: A taxa não pode exceder o valor bruto da parcela.
+    campos_invalidos:
+      - campo: taxa_valor
+        mensagem: a taxa não pode exceder o valor bruto da parcela
+    codigo_regra: RN03
+    correlation_id: 7b1f0c0e-3d0a-4c55-9a43-2d0f3c1e9a10

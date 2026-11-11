@@ -1,0 +1,430 @@
+contratos:
+  post:
+    tags:
+      - contratos
+    summary: Cria contrato em RASCUNHO
+    description: '**Papéis:** MOTORISTA, ADMINISTRADOR.
+
+
+      Motorista só cria contratos próprios (RN10).'
+    operationId: criarContrato
+    x-papeis:
+      - MOTORISTA
+      - ADMINISTRADOR
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/contratos.yaml#/ContratoEntrada
+    responses:
+      '201':
+        description: Contrato criado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+        headers:
+          Location:
+            description: URI do recurso criado.
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  get:
+    tags:
+      - contratos
+    summary: Lista contratos
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      Limitado ao escopo do papel (RN10). Campos de `sort`: `data_inicio`, `valor_total`, `status`, `criado_em`.'
+    operationId: listarContratos
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - name: status
+        in: query
+        required: false
+        description: Situação do contrato.
+        schema:
+          $ref: ../components/schemas/contratos.yaml#/ContratoStatus
+      - name: cooperando_id
+        in: query
+        required: false
+        description: Filtra por cooperando.
+        schema:
+          type: integer
+          format: int64
+      - name: cliente_id
+        in: query
+        required: false
+        description: Filtra por cliente.
+        schema:
+          type: integer
+          format: int64
+      - name: data_inicio_de
+        in: query
+        required: false
+        description: Início de vigência a partir de.
+        schema:
+          type: string
+          format: date
+      - name: data_inicio_ate
+        in: query
+        required: false
+        description: Início de vigência até.
+        schema:
+          type: string
+          format: date
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/ContratoPagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+contratos_id:
+  get:
+    tags:
+      - contratos
+    summary: Detalha contrato com cooperando, cliente e pagamentos
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.'
+    operationId: obterContrato
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/ContratoDetalhe
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+  put:
+    tags:
+      - contratos
+    summary: Edita contrato em RASCUNHO
+    description: '**Papéis:** MOTORISTA, ADMINISTRADOR.
+
+
+      Somente RASCUNHO é editável (RN12); outro estado responde 409.'
+    operationId: atualizarContrato
+    x-papeis:
+      - MOTORISTA
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/contratos.yaml#/ContratoAtualizacao
+    responses:
+      '200':
+        description: Contrato atualizado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  delete:
+    tags:
+      - contratos
+    summary: Exclui contrato em RASCUNHO
+    description: '**Papéis:** MOTORISTA, ADMINISTRADOR.
+
+
+      RN11: só RASCUNHO pode ser excluído.'
+    operationId: excluirContrato
+    x-papeis:
+      - MOTORISTA
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '204':
+        description: Operação concluída sem corpo.
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_submissao:
+  post:
+    tags:
+      - contratos
+    summary: RASCUNHO → PENDENTE_APROVACAO
+    description: '**Papéis:** MOTORISTA, ADMINISTRADOR.
+
+
+      Valida a completude dos dados.'
+    operationId: submeterContrato
+    x-papeis:
+      - MOTORISTA
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_aprovacao:
+  post:
+    tags:
+      - contratos
+    summary: PENDENTE_APROVACAO → ATIVO; gera pagamentos
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Gera o cronograma na mesma transação (RN03, RN05). Quem elaborou o contrato não o aprova (RN12).'
+    operationId: aprovarContrato
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_reprovacao:
+  post:
+    tags:
+      - contratos
+    summary: PENDENTE_APROVACAO → RASCUNHO
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Grava `motivo_reprovacao`.'
+    operationId: reprovarContrato
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/contratos.yaml#/ReprovacaoRequest
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_encerramento:
+  post:
+    tags:
+      - contratos
+    summary: ATIVO → ENCERRADO
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Exige que nenhum pagamento esteja PREVISTO ou PAGO sem repasse (RN06).'
+    operationId: encerrarContrato
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_cancelamento:
+  post:
+    tags:
+      - contratos
+    summary: Estado não final → CANCELADO
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Pagamentos PREVISTO viram CANCELADO; PAGO e REPASSADO são preservados (RN06).'
+    operationId: cancelarContrato
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Transição realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/contratos.yaml#/Contrato
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+contratos_id_pagamentos:
+  get:
+    tags:
+      - contratos
+    summary: Lista pagamentos do contrato
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.
+
+
+      Campos de `sort`: `numero_parcela`, `data_vencimento`.'
+    operationId: listarPagamentosDoContrato
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+      - CLIENTE
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pagamentos.yaml#/PagamentoPagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound

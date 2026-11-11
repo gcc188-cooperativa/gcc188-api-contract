@@ -1,0 +1,317 @@
+ExtratoPagamento:
+  type: object
+  required:
+    - pagamento_id
+    - contrato_id
+    - numero_parcela
+    - data_vencimento
+    - valor_bruto
+    - valor_taxa
+    - valor_liquido
+    - status
+  properties:
+    pagamento_id:
+      type: integer
+      format: int64
+      minimum: 1
+    contrato_id:
+      type: integer
+      format: int64
+      minimum: 1
+    numero_parcela:
+      type: integer
+    data_vencimento:
+      type: string
+      format: date
+    valor_bruto:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    valor_taxa:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    valor_liquido:
+      type: number
+      multipleOf: 0.01
+    status:
+      $ref: pagamentos.yaml#/PagamentoStatus
+    data_repasse:
+      type:
+        - string
+        - 'null'
+      format: date
+Extrato:
+  type: object
+  description: Despesas do cooperando são informativas e não reduzem o repasse (RN09).
+  required:
+    - cooperando
+    - data_inicio
+    - data_fim
+    - pagamentos
+    - despesas
+    - total_bruto
+    - total_taxa
+    - total_liquido
+    - total_repassado
+    - total_a_repassar
+    - total_despesas
+  properties:
+    cooperando:
+      $ref: cooperandos.yaml#/CooperandoResumo
+    data_inicio:
+      type: string
+      format: date
+    data_fim:
+      type: string
+      format: date
+    pagamentos:
+      type: array
+      items:
+        $ref: '#/ExtratoPagamento'
+    despesas:
+      type: array
+      items:
+        $ref: despesas.yaml#/Despesa
+    total_bruto:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    total_taxa:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    total_liquido:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    total_repassado:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    total_a_repassar:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    total_despesas:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+  examples:
+    - cooperando:
+        id: 1
+        matricula: C-0001
+        nome: João Pereira
+      data_inicio: '2026-12-01'
+      data_fim: '2026-12-31'
+      pagamentos:
+        - pagamento_id: 10
+          contrato_id: 5
+          numero_parcela: 1
+          data_vencimento: '2026-12-10'
+          valor_bruto: 2000
+          valor_taxa: 200
+          valor_liquido: 1800
+          status: PAGO
+          data_repasse: null
+      despesas:
+        - origem: COOPERANDO
+          categoria: COMBUSTIVEL
+          descricao: Abastecimento semanal
+          valor: 350
+          data_despesa: '2026-11-05'
+          cooperando_id: 1
+          contrato_id: 5
+          id: 7
+          registrado_por_id: 2
+          versao: 0
+          criado_em: '2026-11-10T13:00:00Z'
+          atualizado_em: '2026-11-10T13:00:00Z'
+      total_bruto: 2000
+      total_taxa: 200
+      total_liquido: 1800
+      total_repassado: 0
+      total_a_repassar: 1800
+      total_despesas: 350
+ResumoFinanceiro:
+  type: object
+  required:
+    - data_inicio
+    - data_fim
+    - taxas_arrecadadas
+    - a_repassar
+    - repassado
+    - despesas_cooperativa
+    - saldo
+  properties:
+    data_inicio:
+      type: string
+      format: date
+    data_fim:
+      type: string
+      format: date
+    taxas_arrecadadas:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    a_repassar:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    repassado:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    despesas_cooperativa:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    saldo:
+      type: number
+      multipleOf: 0.01
+      description: taxas_arrecadadas − despesas_cooperativa.
+  examples:
+    - data_inicio: '2026-12-01'
+      data_fim: '2026-12-31'
+      taxas_arrecadadas: 200
+      a_repassar: 1800
+      repassado: 0
+      despesas_cooperativa: 150
+      saldo: 50
+InadimplenciaItemCliente:
+  type: object
+  required:
+    - cliente
+    - quantidade
+    - valor_total
+  properties:
+    cliente:
+      $ref: clientes.yaml#/ClienteResumo
+    quantidade:
+      type: integer
+      minimum: 0
+    valor_total:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+InadimplenciaItemCooperando:
+  type: object
+  required:
+    - cooperando
+    - quantidade
+    - valor_total
+  properties:
+    cooperando:
+      $ref: cooperandos.yaml#/CooperandoResumo
+    quantidade:
+      type: integer
+      minimum: 0
+    valor_total:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+Inadimplencia:
+  type: object
+  required:
+    - por_cliente
+    - por_cooperando
+  properties:
+    por_cliente:
+      type: array
+      items:
+        $ref: '#/InadimplenciaItemCliente'
+    por_cooperando:
+      type: array
+      items:
+        $ref: '#/InadimplenciaItemCooperando'
+  examples:
+    - por_cliente:
+        - cliente:
+            id: 1
+            nome: Transportes Alfa Ltda
+            documento: '12345678000195'
+          quantidade: 2
+          valor_total: 4000
+      por_cooperando:
+        - cooperando:
+            id: 1
+            matricula: C-0001
+            nome: João Pereira
+          quantidade: 2
+          valor_total: 4000
+IndicadorQuantidadeValor:
+  type: object
+  required:
+    - quantidade
+    - valor
+  properties:
+    quantidade:
+      type: integer
+      minimum: 0
+    valor:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+Indicadores:
+  type: object
+  description: Somente os indicadores aplicáveis ao papel do usuário são preenchidos (RN10).
+  properties:
+    contratos_pendentes_aprovacao:
+      type: integer
+      minimum: 0
+    contratos_ativos:
+      type: integer
+      minimum: 0
+    pagamentos_a_receber:
+      $ref: '#/IndicadorQuantidadeValor'
+    pagamentos_em_atraso:
+      $ref: '#/IndicadorQuantidadeValor'
+    pagamentos_a_repassar:
+      $ref: '#/IndicadorQuantidadeValor'
+    proximos_vencimentos:
+      type: array
+      items:
+        $ref: pagamentos.yaml#/Pagamento
+  examples:
+    - contratos_ativos: 4
+      pagamentos_a_receber:
+        quantidade: 6
+        valor: 12000
+      pagamentos_em_atraso:
+        quantidade: 1
+        valor: 2000
+      pagamentos_a_repassar:
+        quantidade: 2
+        valor: 3600
+      proximos_vencimentos:
+        - id: 10
+          contrato_id: 5
+          numero_parcela: 1
+          data_vencimento: '2026-12-10'
+          valor_bruto: 2000
+          valor_taxa: 200
+          valor_liquido: 1800
+          status: PREVISTO
+          data_baixa: null
+          baixado_por_id: null
+          data_repasse: null
+          repassado_por_id: null
+          observacao: null
+          versao: 0
+          criado_em: '2026-11-10T13:00:00Z'
+          atualizado_em: '2026-11-10T13:00:00Z'

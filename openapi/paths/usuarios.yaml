@@ -1,0 +1,223 @@
+usuarios:
+  post:
+    tags:
+      - usuarios
+    summary: Cria usuário
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      O usuário nasce com `deve_trocar_senha = true`.'
+    operationId: criarUsuario
+    x-papeis:
+      - ADMINISTRADOR
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/usuarios.yaml#/UsuarioCriacao
+    responses:
+      '201':
+        description: Usuário criado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/usuarios.yaml#/Usuario
+        headers:
+          Location:
+            description: URI do recurso criado.
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  get:
+    tags:
+      - usuarios
+    summary: Lista usuários
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Campos de `sort`: `nome`, `email`, `papel`, `criado_em`.'
+    operationId: listarUsuarios
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - name: papel
+        in: query
+        required: false
+        description: Filtra por papel.
+        schema:
+          $ref: ../components/schemas/usuarios.yaml#/Papel
+      - name: ativo
+        in: query
+        required: false
+        description: Filtra por situação.
+        schema:
+          type: boolean
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/usuarios.yaml#/UsuarioPagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+usuarios_id:
+  get:
+    tags:
+      - usuarios
+    summary: Consulta usuário
+    description: '**Papéis:** ADMINISTRADOR.'
+    operationId: obterUsuario
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/usuarios.yaml#/Usuario
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+  put:
+    tags:
+      - usuarios
+    summary: Atualiza usuário
+    description: '**Papéis:** ADMINISTRADOR.'
+    operationId: atualizarUsuario
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/usuarios.yaml#/UsuarioAtualizacao
+    responses:
+      '200':
+        description: Usuário atualizado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/usuarios.yaml#/Usuario
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+usuarios_id_situacao:
+  patch:
+    tags:
+      - usuarios
+    summary: Inativa ou reativa usuário
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Inativar revoga os refresh tokens; o acesso é perdido em até 15 min (RN11).'
+    operationId: alterarSituacaoUsuario
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/usuarios.yaml#/SituacaoRequest
+    responses:
+      '200':
+        description: Situação alterada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/usuarios.yaml#/Usuario
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+usuarios_id_redefinicao_senha:
+  post:
+    tags:
+      - usuarios
+    summary: Define senha temporária
+    description: '**Papéis:** ADMINISTRADOR.
+
+
+      Não há envio de e-mail (D22). Marca `deve_trocar_senha` e revoga os refresh tokens do usuário.'
+    operationId: redefinirSenhaUsuario
+    x-papeis:
+      - ADMINISTRADOR
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/usuarios.yaml#/RedefinicaoSenhaRequest
+    responses:
+      '204':
+        description: Operação concluída sem corpo.
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []

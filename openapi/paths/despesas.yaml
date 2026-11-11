@@ -1,0 +1,264 @@
+despesas:
+  post:
+    tags:
+      - despesas
+    summary: Registra despesa
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      Financeiro e administrador lançam as da cooperativa; o motorista lança as próprias (origem COOPERANDO).'
+    operationId: registrarDespesa
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/despesas.yaml#/DespesaEntrada
+    responses:
+      '201':
+        description: Despesa criado.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/despesas.yaml#/Despesa
+        headers:
+          Location:
+            description: URI do recurso criado.
+            schema:
+              type: string
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  get:
+    tags:
+      - despesas
+    summary: Lista despesas
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      Campos de `sort`: `data_despesa`, `valor`, `categoria`.'
+    operationId: listarDespesas
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - name: origem
+        in: query
+        required: false
+        description: Origem da despesa.
+        schema:
+          $ref: ../components/schemas/despesas.yaml#/Origem
+      - name: categoria
+        in: query
+        required: false
+        description: Categoria.
+        schema:
+          $ref: ../components/schemas/despesas.yaml#/Categoria
+      - name: cooperando_id
+        in: query
+        required: false
+        description: Filtra por cooperando.
+        schema:
+          type: integer
+          format: int64
+      - name: data_de
+        in: query
+        required: false
+        description: Data da despesa a partir de.
+        schema:
+          type: string
+          format: date
+      - name: data_ate
+        in: query
+        required: false
+        description: Data da despesa até.
+        schema:
+          type: string
+          format: date
+      - $ref: ../components/parameters/comuns.yaml#/Page
+      - $ref: ../components/parameters/comuns.yaml#/Size
+      - $ref: ../components/parameters/comuns.yaml#/Sort
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/despesas.yaml#/DespesaPagina
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+despesas_totais:
+  get:
+    tags:
+      - despesas
+    summary: Totais por categoria e período
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.'
+    operationId: totalizarDespesas
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - name: origem
+        in: query
+        required: false
+        description: Origem da despesa.
+        schema:
+          $ref: ../components/schemas/despesas.yaml#/Origem
+      - name: categoria
+        in: query
+        required: false
+        description: Categoria.
+        schema:
+          $ref: ../components/schemas/despesas.yaml#/Categoria
+      - name: cooperando_id
+        in: query
+        required: false
+        description: Filtra por cooperando.
+        schema:
+          type: integer
+          format: int64
+      - name: data_de
+        in: query
+        required: false
+        description: Data da despesa a partir de.
+        schema:
+          type: string
+          format: date
+      - name: data_ate
+        in: query
+        required: false
+        description: Data da despesa até.
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/despesas.yaml#/DespesaTotais
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+despesas_id:
+  get:
+    tags:
+      - despesas
+    summary: Consulta despesa
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.'
+    operationId: obterDespesa
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '200':
+        description: Consulta realizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/despesas.yaml#/Despesa
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+  put:
+    tags:
+      - despesas
+    summary: Atualiza despesa
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      O motorista atualiza apenas as suas.'
+    operationId: atualizarDespesa
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/despesas.yaml#/DespesaAtualizacao
+    responses:
+      '200':
+        description: Despesa atualizada.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/despesas.yaml#/Despesa
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+      '409':
+        $ref: ../components/responses/erros.yaml#/Conflict
+      '422':
+        $ref: ../components/responses/erros.yaml#/UnprocessableEntity
+    security:
+      - cookieAuth: []
+        csrfHeader: []
+  delete:
+    tags:
+      - despesas
+    summary: Exclui despesa
+    description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
+
+
+      O motorista exclui apenas as suas.'
+    operationId: excluirDespesa
+    x-papeis:
+      - ADMINISTRADOR
+      - FINANCEIRO
+      - MOTORISTA
+    parameters:
+      - $ref: ../components/parameters/comuns.yaml#/Id
+    responses:
+      '204':
+        description: Operação concluída sem corpo.
+      '400':
+        $ref: ../components/responses/erros.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses/erros.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses/erros.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses/erros.yaml#/NotFound
+    security:
+      - cookieAuth: []
+        csrfHeader: []

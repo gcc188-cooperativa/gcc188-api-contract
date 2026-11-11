@@ -1,0 +1,208 @@
+Origem:
+  type: string
+  enum:
+    - COOPERATIVA
+    - COOPERANDO
+Categoria:
+  type: string
+  enum:
+    - COMBUSTIVEL
+    - PEDAGIO
+    - MANUTENCAO
+    - ADMINISTRATIVA
+    - TRIBUTOS
+    - OUTROS
+DespesaEntrada:
+  type: object
+  description:
+    'COOPERATIVA: sem cooperando_id e sem contrato_id. COOPERANDO: cooperando_id obrigatório; contrato_id
+    opcional e, se informado, do mesmo cooperando (RN08).'
+  required:
+    - origem
+    - categoria
+    - descricao
+    - valor
+    - data_despesa
+  properties:
+    origem:
+      $ref: '#/Origem'
+    categoria:
+      $ref: '#/Categoria'
+    descricao:
+      type: string
+      minLength: 1
+      maxLength: 300
+    valor:
+      type: number
+      multipleOf: 0.01
+      exclusiveMinimum: 0
+      description: Valor em reais com duas casas decimais, maior que zero (D39).
+    data_despesa:
+      type: string
+      format: date
+    cooperando_id:
+      type:
+        - integer
+        - 'null'
+      format: int64
+      minimum: 1
+    contrato_id:
+      type:
+        - integer
+        - 'null'
+      format: int64
+      minimum: 1
+  examples:
+    - origem: COOPERANDO
+      categoria: COMBUSTIVEL
+      descricao: Abastecimento semanal
+      valor: 350
+      data_despesa: '2026-11-05'
+      cooperando_id: 1
+      contrato_id: 5
+DespesaAtualizacao:
+  allOf:
+    - $ref: '#/DespesaEntrada'
+    - type: object
+      required:
+        - versao
+      properties:
+        versao:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Versão para concorrência otimista (D13). Obrigatória em PUT; divergência responde 409.
+  examples:
+    - origem: COOPERANDO
+      categoria: COMBUSTIVEL
+      descricao: Abastecimento semanal
+      valor: 350
+      data_despesa: '2026-11-05'
+      cooperando_id: 1
+      contrato_id: 5
+      versao: 0
+Despesa:
+  allOf:
+    - $ref: '#/DespesaEntrada'
+    - type: object
+      required:
+        - id
+        - registrado_por_id
+        - versao
+        - criado_em
+        - atualizado_em
+      properties:
+        id:
+          type: integer
+          format: int64
+          minimum: 1
+          readOnly: true
+        registrado_por_id:
+          type: integer
+          format: int64
+          minimum: 1
+        versao:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Versão para concorrência otimista (D13). Obrigatória em PUT; divergência responde 409.
+        criado_em:
+          type: string
+          format: date-time
+          readOnly: true
+        atualizado_em:
+          type: string
+          format: date-time
+          readOnly: true
+  examples:
+    - origem: COOPERANDO
+      categoria: COMBUSTIVEL
+      descricao: Abastecimento semanal
+      valor: 350
+      data_despesa: '2026-11-05'
+      cooperando_id: 1
+      contrato_id: 5
+      id: 7
+      registrado_por_id: 2
+      versao: 0
+      criado_em: '2026-11-10T13:00:00Z'
+      atualizado_em: '2026-11-10T13:00:00Z'
+DespesaPagina:
+  type: object
+  required:
+    - content
+    - page
+    - size
+    - total_elements
+    - total_pages
+  properties:
+    content:
+      type: array
+      items:
+        $ref: '#/Despesa'
+    page:
+      type: integer
+      minimum: 0
+      description: Número da página, iniciando em 0.
+    size:
+      type: integer
+      minimum: 1
+      maximum: 100
+    total_elements:
+      type: integer
+      format: int64
+      minimum: 0
+    total_pages:
+      type: integer
+      minimum: 0
+  examples:
+    - content:
+        - origem: COOPERANDO
+          categoria: COMBUSTIVEL
+          descricao: Abastecimento semanal
+          valor: 350
+          data_despesa: '2026-11-05'
+          cooperando_id: 1
+          contrato_id: 5
+          id: 7
+          registrado_por_id: 2
+          versao: 0
+          criado_em: '2026-11-10T13:00:00Z'
+          atualizado_em: '2026-11-10T13:00:00Z'
+      page: 0
+      size: 20
+      total_elements: 1
+      total_pages: 1
+TotalPorCategoria:
+  type: object
+  required:
+    - categoria
+    - total
+  properties:
+    categoria:
+      $ref: '#/Categoria'
+    total:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+DespesaTotais:
+  type: object
+  required:
+    - total_geral
+    - por_categoria
+  properties:
+    total_geral:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (D39).
+    por_categoria:
+      type: array
+      items:
+        $ref: '#/TotalPorCategoria'
+  examples:
+    - total_geral: 350
+      por_categoria:
+        - categoria: COMBUSTIVEL
+          total: 350
