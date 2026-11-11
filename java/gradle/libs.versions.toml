@@ -1,6 +1,6 @@
 # Versões fixadas (RNF-26). A linha do Spring Boot deve ser confirmada no marco M0 (PD12).
 [versions]
-openapiGenerator = "7.16.0"
+openapiGenerator = "7.27.0"
 springBoot = "4.0.0"
 
 [libraries]
