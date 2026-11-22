@@ -83,8 +83,8 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            // GITHUB_REPOSITORY = <org>/gcc188-api-contract, definido pelo GitHub Actions
-            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY") ?: "ORG/gcc188-api-contract"}")
+            // GITHUB_REPOSITORY = gcc188-cooperativa/gcc188-api-contract, definido pelo GitHub Actions
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY") ?: "gcc188-cooperativa/gcc188-api-contract"}")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
