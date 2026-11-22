@@ -1,9 +1,8 @@
-# Ponto de entrada do contrato (OpenAPI 3.1). Um arquivo por recurso em paths/; esquemas reutilizáveis em components/.
 openapi: 3.1.0
 info:
   title: API da Cooperativa de Transportes
-  version: 0.1.0
-  summary: Contratos, pagamentos, cooperandos e despesas.
+  version: 0.2.0
+  summary: Contratos, pagamentos, cooperados e despesas.
   description:
     Contrato da API REST do sistema de gestão da cooperativa (fonte de verdade — D06). Autenticação por
     cookies `HttpOnly`; requisições de escrita exigem `X-XSRF-TOKEN` igual ao cookie `XSRF-TOKEN`. JSON em `snake_case`;
@@ -21,7 +20,7 @@ tags:
     description: Login, renovação, logout e sessão (cookies HttpOnly, CSRF).
   - name: usuarios
     description: CRUD de usuários (módulo A).
-  - name: cooperandos
+  - name: cooperados
     description: Motoristas associados.
   - name: clientes
     description: Contratantes dos serviços.
@@ -30,7 +29,7 @@ tags:
   - name: pagamentos
     description: Baixa, repasse e estorno.
   - name: despesas
-    description: Despesas da cooperativa e dos cooperandos.
+    description: Despesas da cooperativa e dos cooperados.
   - name: relatorios
     description: Extrato, resumo financeiro e inadimplência.
   - name: painel
@@ -54,12 +53,12 @@ paths:
     $ref: paths/usuarios.yaml#/usuarios_id_situacao
   /usuarios/{id}/redefinicao-senha:
     $ref: paths/usuarios.yaml#/usuarios_id_redefinicao_senha
-  /cooperandos:
-    $ref: paths/cooperandos.yaml#/cooperandos
-  /cooperandos/{id}:
-    $ref: paths/cooperandos.yaml#/cooperandos_id
-  /cooperandos/{id}/situacao:
-    $ref: paths/cooperandos.yaml#/cooperandos_id_situacao
+  /cooperados:
+    $ref: paths/cooperados.yaml#/cooperados
+  /cooperados/{id}:
+    $ref: paths/cooperados.yaml#/cooperados_id
+  /cooperados/{id}/situacao:
+    $ref: paths/cooperados.yaml#/cooperados_id_situacao
   /clientes:
     $ref: paths/clientes.yaml#/clientes
   /clientes/{id}:
@@ -98,8 +97,8 @@ paths:
     $ref: paths/despesas.yaml#/despesas_totais
   /despesas/{id}:
     $ref: paths/despesas.yaml#/despesas_id
-  /cooperandos/{id}/extrato:
-    $ref: paths/relatorios.yaml#/cooperandos_id_extrato
+  /cooperados/{id}/extrato:
+    $ref: paths/relatorios.yaml#/cooperados_id_extrato
   /relatorios/resumo-financeiro:
     $ref: paths/relatorios.yaml#/relatorios_resumo_financeiro
   /relatorios/inadimplencia:
@@ -112,7 +111,9 @@ components:
       type: apiKey
       in: cookie
       name: ACCESS_TOKEN
-      description: JWT de acesso (15 min), cookie HttpOnly; Secure; SameSite=Strict; Path=/api.
+      description: >-
+        JWT de acesso (15 min), cookie HttpOnly; Secure; SameSite=Strict;
+        Path=/api.
     refreshCookie:
       type: apiKey
       in: cookie
@@ -122,7 +123,9 @@ components:
       type: apiKey
       in: header
       name: X-XSRF-TOKEN
-      description: Deve ser igual ao cookie XSRF-TOKEN em POST, PUT, PATCH e DELETE autenticados (CA-11).
+      description: >-
+        Deve ser igual ao cookie XSRF-TOKEN em POST, PUT, PATCH e DELETE
+        autenticados (CA-11).
   parameters:
     Id:
       $ref: components/parameters/comuns.yaml#/Id
@@ -170,16 +173,16 @@ components:
       $ref: components/schemas/usuarios.yaml#/RedefinicaoSenhaRequest
     UsuarioPagina:
       $ref: components/schemas/usuarios.yaml#/UsuarioPagina
-    CooperandoResumo:
-      $ref: components/schemas/cooperandos.yaml#/CooperandoResumo
-    Cooperando:
-      $ref: components/schemas/cooperandos.yaml#/Cooperando
-    CooperandoDados:
-      $ref: components/schemas/cooperandos.yaml#/CooperandoDados
-    CooperandoCriacao:
-      $ref: components/schemas/cooperandos.yaml#/CooperandoCriacao
-    CooperandoPagina:
-      $ref: components/schemas/cooperandos.yaml#/CooperandoPagina
+    CooperadoResumo:
+      $ref: components/schemas/cooperados.yaml#/CooperadoResumo
+    Cooperado:
+      $ref: components/schemas/cooperados.yaml#/Cooperado
+    CooperadoDados:
+      $ref: components/schemas/cooperados.yaml#/CooperadoDados
+    CooperadoCriacao:
+      $ref: components/schemas/cooperados.yaml#/CooperadoCriacao
+    CooperadoPagina:
+      $ref: components/schemas/cooperados.yaml#/CooperadoPagina
     ClienteResumo:
       $ref: components/schemas/clientes.yaml#/ClienteResumo
     Cliente:
@@ -244,8 +247,8 @@ components:
       $ref: components/schemas/relatorios.yaml#/ResumoFinanceiro
     InadimplenciaItemCliente:
       $ref: components/schemas/relatorios.yaml#/InadimplenciaItemCliente
-    InadimplenciaItemCooperando:
-      $ref: components/schemas/relatorios.yaml#/InadimplenciaItemCooperando
+    InadimplenciaItemCooperado:
+      $ref: components/schemas/relatorios.yaml#/InadimplenciaItemCooperado
     Inadimplencia:
       $ref: components/schemas/relatorios.yaml#/Inadimplencia
     IndicadorQuantidadeValor:

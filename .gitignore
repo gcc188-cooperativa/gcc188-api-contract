@@ -7,3 +7,14 @@ java/.gradle/
 java/.idea/
 *.log
 .env
+
+# Gradle (gitignore.io: https://www.toptal.com/developers/gitignore/api/gradle)
+.gradle/
+gradle-app.setting
+.gradletasknamecache
+*.hprof
+.project
+.classpath
+# O wrapper é versionado: não ignorar jar e properties (padrão gitignore.io)
+!gradle-wrapper.jar
+!gradle-wrapper.properties

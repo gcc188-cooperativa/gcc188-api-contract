@@ -9,4 +9,4 @@ const run = (cmd, args) => execFileSync(cmd, args, { stdio: 'inherit' });
 run('npx', ['redocly', 'bundle', entry, '-o', 'dist/openapi.yaml']);
 run('npx', ['redocly', 'bundle', entry, '--ext', 'json', '-o', 'dist/openapi.json']);
 run('npx', ['openapi-typescript', 'dist/openapi.yaml', '-o', 'dist/index.d.ts']);
-writeFileSync('dist/index.js', '// Somente tipos: use `import type { components } from "@org/api-contract"`.\nexport {};\n');
+writeFileSync('dist/index.js', '// Somente tipos: use `import type { components } from "@gcc188-cooperativa/api-contract"`.\nexport {};\n');
