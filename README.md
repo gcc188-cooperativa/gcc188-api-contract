@@ -1,6 +1,6 @@
 # gcc188-api-contract
 
-Fonte de verdade da API REST da cooperativa de transportes (D06, _contract-first_): recursos, esquemas, erros e segurança em **OpenAPI 3.1**. Backend e front **não copiam** o documento; consomem **pacotes versionados** gerados aqui e publicados no **GitHub Packages** da organização `gcc188-cooperativa` (D07).
+Fonte de verdade da API REST da cooperativa de transportes (D06, _contract-first_): recursos, esquemas, erros e segurança em **OpenAPI 3.1**. Backend e front **não copiam** o documento; consomem **pacotes versionados** gerados aqui e publicados no **GitHub Packages** da organização Cooperativa, `gcc188-cooperativa` no GitHub (D07).
 
 | Artefato publicado (GitHub Packages, mesma versão) | Conteúdo                                                           | Consumidor                            |
 | -------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------- |
@@ -86,7 +86,7 @@ A leitura do GitHub Packages exige _token_ mesmo em repositórios públicos: no 
 
 ## Decisões registradas
 
-- **PD01:** organização `gcc188-cooperativa`; o escopo npm é `@gcc188-cooperativa/api-contract`, fixo em `ts/package.json` (não é mais derivado do dono do repositório no release).
+- **PD01:** organização Cooperativa (`gcc188-cooperativa` no GitHub); o escopo npm é `@gcc188-cooperativa/api-contract`, fixo em `ts/package.json` (não é mais derivado do dono do repositório no release).
 - **PD02:** publicação exclusivamente no GitHub Packages — Maven em `maven.pkg.github.com` e npm em `npm.pkg.github.com`; não há publicação no Maven Central nem no npmjs.
 - **PD03:** `groupId` `br.ufla.gcc188`, `artifactId` `cooperativa-api-contract` e pacote base Java `br.ufla.gcc188.cooperativa.api`, conforme `java/build.gradle.kts`.
 
