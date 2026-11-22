@@ -43,7 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: lts/*, cache: npm }
       - run: npm ci
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with: { distribution: temurin, java-version: '25' }
       # Java 25 vem do setup-java; a versão do Gradle vem do wrapper versionado.
       - uses: gradle/actions/setup-gradle@v4
