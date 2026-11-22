@@ -35,9 +35,9 @@ jobs:
       - run: npm ci
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '25' }
+      # Java 25 vem do setup-java; a versão do Gradle vem do wrapper versionado.
       - uses: gradle/actions/setup-gradle@v4
-        with: { gradle-version: '9.1.0' }
-      - run: if [ -x ./gradlew ]; then ./gradlew --no-daemon publish; else gradle --no-daemon publish; fi
+      - run: ./gradlew --no-daemon publish
         working-directory: java
         env:
           GITHUB_ACTOR: ${{ github.actor }}
