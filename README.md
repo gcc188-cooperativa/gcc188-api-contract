@@ -19,6 +19,8 @@ openapi/
     ├── responses/          # 400, 401, 403, 404, 409 e 422 (application/problem+json)
     └── examples/           # exemplos de erro (usados por Prism e MSW)
 java/                       # projeto Gradle: gera e publica DTOs e interfaces
+├── gradlew / gradlew.bat   # wrapper Gradle 9.1.0 versionado
+└── gradle/wrapper/         # jar + properties do wrapper
 ts/                         # empacota o documento e gera tipos TypeScript
 scripts/                    # mock-smoke.sh, check-breaking.sh
 docs/convencoes.md          # convenções do contrato
@@ -37,7 +39,7 @@ npm run mock           # mock do Prism em http://127.0.0.1:4010
 npm run mock:smoke     # sobe o Prism e confere que os exemplos respondem e validam
 npm run breaking       # oasdiff contra a última tag (requer o binário oasdiff)
 (cd ts && npm ci && npm run build && npm run typecheck)
-(cd java && gradle build)
+(cd java && ./gradlew build)
 ```
 
 > O Prism serve na raiz (ignora o prefixo relativo `/api/v1` de `servers`). No sistema integrado, o Caddy roteia `/api/*` ao backend (`gcc188-infra`).
@@ -47,7 +49,7 @@ npm run breaking       # oasdiff contra a última tag (requer o binário oasdiff
 - **Ramos:** _trunk-based_ protegido (D04): `master` + ramos curtos `feat/*`, `fix/*` e `docs/*` (até 2 dias úteis), PR com revisão e verificações obrigatórias, _squash merge_.
 - **Commits:** _Conventional Commits_ `tipo(escopo): descrição (RF-xxx-NN)`; escopos válidos em `commitlint.config.cjs`. Ex.: `feat(contratos): aprovar contrato e gerar pagamentos (RF-CTR-04)`.
 - **Pastas:** fonte OpenAPI em `openapi/`, geradores em `java/` e `ts/`, convenções em `docs/convencoes.md`. Contrato e artefatos gerados versionados aqui; requisitos e design ficam em `gcc188-docs`.
-- **`.gitignore`:** ignora `node_modules/`, `build/`, `ts/dist/`, `java/build/`, `java/.gradle/`, `java/.idea/`, `*.log` e `.env`; saídas de geração e credenciais não entram no Git.
+- **`.gitignore`:** ignora `node_modules/`, `build/`, `ts/dist/`, `java/build/`, `java/.gradle/`, `java/.idea/`, `*.log` e `.env`; saídas de geração e credenciais não entram no Git, com exceção do jar e das properties do wrapper Gradle (modelo gitignore.io).
 - **Versão:** SemVer via Release Please. Cada push em `master` abre/atualiza o PR de release (`CHANGELOG.md`, `java/gradle.properties`, `ts/package.json`, `info.version`). Ao integrá-lo, cria-se a tag `vX.Y.Z` e os dois pacotes são publicados no GitHub Packages no mesmo workflow.
 - **Compatibilidade:** antes da 1.0.0 mudança incompatível é _minor_; depois, remover/renomear campo, torná-lo obrigatório ou mudar tipo é _major_ e exige `!` no título do PR (`feat(contratos)!: ...`). Remoção passa antes por `deprecated: true` por ao menos uma _minor_.
 - **Verificação:** `lefthook` roda `pre-commit` (Spectral/Prettier) e `commit-msg` (commitlint); `governance` valida título de PR e commits no CI.
@@ -82,15 +84,17 @@ A leitura do GitHub Packages exige _token_ mesmo em repositórios públicos: no 
 
 ## Java
 
-- Gerador `spring` com `interfaceOnly`, `useSpringBoot4`, `useJackson3`, `useTags` (opções do OpenAPI Generator 7.16.0 em diante), toolchain Java 25. DTOs e interfaces em `br.ufla.gcc188.cooperativa.api` (e subpacotes `.model` e `.invoker`).
+- Gerador `spring` com `interfaceOnly`, `useSpringBoot4`, `useJackson3`, `useTags` (opções do OpenAPI Generator 7.16.0 em diante), toolchain Java 25 e Spring Boot 4.2.0. DTOs e interfaces em `br.ufla.gcc188.cooperativa.api` (e subpacotes `.model` e `.invoker`).
+- Wrapper Gradle 9.1.0 versionado em `java/`: use `./gradlew` localmente e no CI; a versão do Gradle não é mais passada pelo `setup-gradle`.
 
 ## Decisões registradas
 
 - **PD01:** organização Cooperativa (`gcc188-cooperativa` no GitHub); o escopo npm é `@gcc188-cooperativa/api-contract`, fixo em `ts/package.json` (não é mais derivado do dono do repositório no release).
 - **PD02:** publicação exclusivamente no GitHub Packages — Maven em `maven.pkg.github.com` e npm em `npm.pkg.github.com`; não há publicação no Maven Central nem no npmjs.
 - **PD03:** `groupId` `br.ufla.gcc188`, `artifactId` `cooperativa-api-contract` e pacote base Java `br.ufla.gcc188.cooperativa.api`, conforme `java/build.gradle.kts`.
+- **PD12:** Spring Boot `4.2.0` fixado em `java/gradle/libs.versions.toml`.
+- **Wrapper Gradle:** Gradle `9.1.0` versionado em `java/gradlew`, `java/gradlew.bat` e `java/gradle/wrapper/`; o `.gitignore` segue o modelo gitignore.io e não ignora o jar do wrapper.
 
 ## Pendências
 
-- **PD12:** confirmar a linha do Spring Boot fixada em `java/gradle/libs.versions.toml` (`4.0.0`) no marco M0.
-- **Wrapper Gradle:** não está versionado. No marco M0: `cd java && gradle wrapper --gradle-version 9.1.0` e versionar `gradlew`, `gradlew.bat` e `gradle/wrapper/`. Até lá o CI usa o Gradle do `setup-gradle`.
+Nenhuma pendência registrada.
