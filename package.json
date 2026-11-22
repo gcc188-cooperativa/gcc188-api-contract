@@ -12,7 +12,7 @@
     "mock": "npm run bundle && prism mock -h 127.0.0.1 -p 4010 --errors build/openapi.yaml",
     "mock:smoke": "bash scripts/mock-smoke.sh",
     "breaking": "bash scripts/check-breaking.sh",
-    "prepare": "lefthook install || true"
+    "prepare": "lefthook install"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
