@@ -47,9 +47,13 @@ npm run breaking       # oasdiff contra a última tag (requer o binário oasdiff
 ## Fluxo de trabalho (tarefa #21)
 
 - **Ramos:** _trunk-based_ protegido (D04): `master` + ramos curtos `feat/*`, `fix/*` e `docs/*` (até 2 dias úteis), PR com revisão e verificações obrigatórias, _squash merge_.
-- **Commits:** _Conventional Commits_ `tipo(escopo): descrição (RF-xxx-NN)`; escopos válidos em `commitlint.config.cjs`. Ex.: `feat(contratos): aprovar contrato e gerar pagamentos (RF-CTR-04)`.
+- **Commits:** _Conventional Commits_ `tipo(escopo): descrição (RF-xxx-NN)`; escopos válidos em `commitlint.config.cjs`. Ex.: `feat(contratos): aprovar contrato e gerar pagamentos (RF-CTR-04)`. Referência sugerida na tarefa: [iuricode/padrões-de-commits](https://github.com/iuricode/padroes-de-commits); adotamos Conventional Commits em vez disso por compatibilidade com commitlint, Release Please e geração automática de changelog.
 - **Pastas:** fonte OpenAPI em `openapi/`, geradores em `java/` e `ts/`, convenções em `docs/convencoes.md`. Contrato e artefatos gerados versionados aqui; requisitos e design ficam em `gcc188-docs`.
-- **`.gitignore`:** ignora `node_modules/`, `build/`, `ts/dist/`, `java/build/`, `java/.gradle/`, `java/.idea/`, `*.log` e `.env`; saídas de geração e credenciais não entram no Git, com exceção do jar e das properties do wrapper Gradle (modelo gitignore.io).
+- **`.gitignore`:** ignora artefatos gerados e arquivos locais, mantendo versionado apenas o que é fonte ou necessário para build reproduzível.
+  - `node_modules/`, `build/`, `ts/dist/`, `ts/node_modules/`, `java/build/`, `java/.gradle/`, `java/.idea/`: dependências e saídas de geração/compilação.
+  - `.env`, `.env.*` (exceto `.env.example`): segredos e configuração local.
+  - `.idea/`, `.vscode/`, `*.iml`, `*.log`, `.DS_Store`, `Thumbs.db`: metadados de IDE, logs e arquivos de SO.
+  - Padrões Gradle de gitignore.io (`gradle-app.setting`, `.gradletasknamecache`, `*.hprof`, `.project`, `.classpath`), com exceção explícita de `!gradle-wrapper.jar` e `!gradle-wrapper.properties` para versionar o wrapper.
 - **Versão:** SemVer via Release Please. Cada push em `master` abre/atualiza o PR de release (`CHANGELOG.md`, `java/gradle.properties`, `ts/package.json`, `info.version`). Ao integrá-lo, cria-se a tag `vX.Y.Z` e os dois pacotes são publicados no GitHub Packages no mesmo workflow.
 - **Compatibilidade:** antes da 1.0.0 mudança incompatível é _minor_; depois, remover/renomear campo, torná-lo obrigatório ou mudar tipo é _major_ e exige `!` no título do PR (`feat(contratos)!: ...`). Remoção passa antes por `deprecated: true` por ao menos uma _minor_.
 - **Verificação:** `lefthook` roda `pre-commit` (Spectral/Prettier) e `commit-msg` (commitlint); `governance` valida título de PR e commits no CI.
