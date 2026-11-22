@@ -1,0 +1,6 @@
+# Gradle wrapper: preservar os finais de linha esperados por cada plataforma.
+gradlew text eol=lf
+gradlew.bat text eol=crlf
+
+# Binários não devem sofrer normalização de linhas.
+*.jar binary

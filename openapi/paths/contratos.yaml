@@ -61,10 +61,10 @@ contratos:
         description: Situação do contrato.
         schema:
           $ref: ../components/schemas/contratos.yaml#/ContratoStatus
-      - name: cooperando_id
+      - name: cooperado_id
         in: query
         required: false
-        description: Filtra por cooperando.
+        description: Filtra por cooperado.
         schema:
           type: integer
           format: int64
@@ -109,7 +109,7 @@ contratos_id:
   get:
     tags:
       - contratos
-    summary: Detalha contrato com cooperando, cliente e pagamentos
+    summary: Detalha contrato com cooperado, cliente e pagamentos
     description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA, CLIENTE.'
     operationId: obterContrato
     x-papeis:

@@ -1,5 +1,5 @@
 {
-  "name": "@org/api-contract",
+  "name": "@gcc188-cooperativa/api-contract",
   "version": "0.2.0",
   "description": "Documento OpenAPI empacotado e tipos TypeScript do contrato da API da cooperativa.",
   "type": "module",

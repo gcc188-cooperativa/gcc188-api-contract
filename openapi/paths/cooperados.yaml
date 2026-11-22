@@ -1,10 +1,10 @@
-cooperandos:
+cooperados:
   post:
     tags:
-      - cooperandos
-    summary: Cadastra cooperando e usuário (transação)
+      - cooperados
+    summary: Cadastra cooperado e usuário (transação)
     description: '**Papéis:** ADMINISTRADOR.'
-    operationId: criarCooperando
+    operationId: criarCooperado
     x-papeis:
       - ADMINISTRADOR
     requestBody:
@@ -12,14 +12,14 @@ cooperandos:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/cooperandos.yaml#/CooperandoCriacao
+            $ref: ../components/schemas/cooperados.yaml#/CooperadoCriacao
     responses:
       '201':
-        description: Cooperando criado.
+        description: Cooperado criado.
         content:
           application/json:
             schema:
-              $ref: ../components/schemas/cooperandos.yaml#/Cooperando
+              $ref: ../components/schemas/cooperados.yaml#/Cooperado
         headers:
           Location:
             description: URI do recurso criado.
@@ -40,13 +40,13 @@ cooperandos:
         csrfHeader: []
   get:
     tags:
-      - cooperandos
-    summary: Lista cooperandos
+      - cooperados
+    summary: Lista cooperados
     description: '**Papéis:** ADMINISTRADOR, FINANCEIRO.
 
 
       Campos de `sort`: `nome`, `matricula`, `data_ingresso`.'
-    operationId: listarCooperandos
+    operationId: listarCooperados
     x-papeis:
       - ADMINISTRADOR
       - FINANCEIRO
@@ -78,23 +78,23 @@ cooperandos:
         content:
           application/json:
             schema:
-              $ref: ../components/schemas/cooperandos.yaml#/CooperandoPagina
+              $ref: ../components/schemas/cooperados.yaml#/CooperadoPagina
       '400':
         $ref: ../components/responses/erros.yaml#/BadRequest
       '401':
         $ref: ../components/responses/erros.yaml#/Unauthorized
       '403':
         $ref: ../components/responses/erros.yaml#/Forbidden
-cooperandos_id:
+cooperados_id:
   get:
     tags:
-      - cooperandos
-    summary: Consulta cooperando
+      - cooperados
+    summary: Consulta cooperado
     description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
 
 
       O motorista consulta apenas o próprio (RN10).'
-    operationId: obterCooperando
+    operationId: obterCooperado
     x-papeis:
       - ADMINISTRADOR
       - FINANCEIRO
@@ -107,7 +107,7 @@ cooperandos_id:
         content:
           application/json:
             schema:
-              $ref: ../components/schemas/cooperandos.yaml#/Cooperando
+              $ref: ../components/schemas/cooperados.yaml#/Cooperado
       '400':
         $ref: ../components/responses/erros.yaml#/BadRequest
       '401':
@@ -118,10 +118,10 @@ cooperandos_id:
         $ref: ../components/responses/erros.yaml#/NotFound
   put:
     tags:
-      - cooperandos
-    summary: Atualiza cooperando
+      - cooperados
+    summary: Atualiza cooperado
     description: '**Papéis:** ADMINISTRADOR.'
-    operationId: atualizarCooperando
+    operationId: atualizarCooperado
     x-papeis:
       - ADMINISTRADOR
     parameters:
@@ -131,14 +131,14 @@ cooperandos_id:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/cooperandos.yaml#/CooperandoDados
+            $ref: ../components/schemas/cooperados.yaml#/CooperadoDados
     responses:
       '200':
-        description: Cooperando atualizado.
+        description: Cooperado atualizado.
         content:
           application/json:
             schema:
-              $ref: ../components/schemas/cooperandos.yaml#/Cooperando
+              $ref: ../components/schemas/cooperados.yaml#/Cooperado
       '400':
         $ref: ../components/responses/erros.yaml#/BadRequest
       '401':
@@ -154,16 +154,16 @@ cooperandos_id:
     security:
       - cookieAuth: []
         csrfHeader: []
-cooperandos_id_situacao:
+cooperados_id_situacao:
   patch:
     tags:
-      - cooperandos
-    summary: Inativa ou reativa cooperando
+      - cooperados
+    summary: Inativa ou reativa cooperado
     description: '**Papéis:** ADMINISTRADOR.
 
 
-      Cooperando inativo não pode ser vinculado a novos contratos (RN13).'
-    operationId: alterarSituacaoCooperando
+      Cooperado inativo não pode ser vinculado a novos contratos (RN13).'
+    operationId: alterarSituacaoCooperado
     x-papeis:
       - ADMINISTRADOR
     parameters:
@@ -180,7 +180,7 @@ cooperandos_id_situacao:
         content:
           application/json:
             schema:
-              $ref: ../components/schemas/cooperandos.yaml#/Cooperando
+              $ref: ../components/schemas/cooperados.yaml#/Cooperado
       '400':
         $ref: ../components/responses/erros.yaml#/BadRequest
       '401':

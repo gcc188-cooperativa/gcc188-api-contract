@@ -1,13 +1,13 @@
-cooperandos_id_extrato:
+cooperados_id_extrato:
   get:
     tags:
       - relatorios
-    summary: Extrato do cooperando no período
+    summary: Extrato do cooperado no período
     description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
 
 
       O motorista consulta apenas o próprio extrato (RN10).'
-    operationId: obterExtratoCooperando
+    operationId: obterExtratoCooperado
     x-papeis:
       - ADMINISTRADOR
       - FINANCEIRO
