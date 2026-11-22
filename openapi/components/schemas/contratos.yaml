@@ -22,7 +22,7 @@ ContratoEntrada:
     Dados editáveis de um contrato em RASCUNHO. As regras entre campos (RN02, RN03, RN05) são validadas
     pela API e respondem 422.
   required:
-    - cooperando_id
+    - cooperado_id
     - cliente_id
     - descricao
     - valor_total
@@ -32,7 +32,7 @@ ContratoEntrada:
     - taxa_tipo
     - taxa_valor
   properties:
-    cooperando_id:
+    cooperado_id:
       type: integer
       format: int64
       minimum: 1
@@ -80,7 +80,7 @@ ContratoEntrada:
         Percentual (até 100) ou valor fixo por pagamento, conforme taxa_tipo (RN02). A taxa nunca excede
         o bruto da parcela (RN03).
   examples:
-    - cooperando_id: 1
+    - cooperado_id: 1
       cliente_id: 1
       descricao: Transporte de funcionários, rota Lavras–Campo Belo
       valor_total: 6000
@@ -104,7 +104,7 @@ ContratoAtualizacao:
           minimum: 0
           description: Versão para concorrência otimista (D13). Obrigatória em PUT; divergência responde 409.
   examples:
-    - cooperando_id: 1
+    - cooperado_id: 1
       cliente_id: 1
       descricao: Transporte de funcionários, rota Lavras–Campo Belo
       valor_total: 6000
@@ -170,7 +170,7 @@ Contrato:
           format: date-time
           readOnly: true
   examples:
-    - cooperando_id: 1
+    - cooperado_id: 1
       cliente_id: 1
       descricao: Transporte de funcionários, rota Lavras–Campo Belo
       valor_total: 6000
@@ -195,12 +195,12 @@ ContratoDetalhe:
     - $ref: '#/Contrato'
     - type: object
       required:
-        - cooperando
+        - cooperado
         - cliente
         - pagamentos
       properties:
-        cooperando:
-          $ref: cooperandos.yaml#/CooperandoResumo
+        cooperado:
+          $ref: cooperados.yaml#/CooperadoResumo
         cliente:
           $ref: clientes.yaml#/ClienteResumo
         pagamentos:
@@ -208,7 +208,7 @@ ContratoDetalhe:
           items:
             $ref: pagamentos.yaml#/Pagamento
   examples:
-    - cooperando_id: 1
+    - cooperado_id: 1
       cliente_id: 1
       descricao: Transporte de funcionários, rota Lavras–Campo Belo
       valor_total: 6000
@@ -228,7 +228,7 @@ ContratoDetalhe:
       versao: 1
       criado_em: '2026-11-10T13:00:00Z'
       atualizado_em: '2026-11-10T13:00:00Z'
-      cooperando:
+      cooperado:
         id: 1
         matricula: C-0001
         nome: João Pereira
@@ -294,7 +294,7 @@ ContratoPagina:
       minimum: 0
   examples:
     - content:
-        - cooperando_id: 1
+        - cooperado_id: 1
           cliente_id: 1
           descricao: Transporte de funcionários, rota Lavras–Campo Belo
           valor_total: 6000

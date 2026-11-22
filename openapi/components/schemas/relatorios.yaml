@@ -45,9 +45,9 @@ ExtratoPagamento:
       format: date
 Extrato:
   type: object
-  description: Despesas do cooperando são informativas e não reduzem o repasse (RN09).
+  description: Despesas do cooperado são informativas e não reduzem o repasse (RN09).
   required:
-    - cooperando
+    - cooperado
     - data_inicio
     - data_fim
     - pagamentos
@@ -59,8 +59,8 @@ Extrato:
     - total_a_repassar
     - total_despesas
   properties:
-    cooperando:
-      $ref: cooperandos.yaml#/CooperandoResumo
+    cooperado:
+      $ref: cooperados.yaml#/CooperadoResumo
     data_inicio:
       type: string
       format: date
@@ -106,7 +106,7 @@ Extrato:
       minimum: 0
       description: Valor em reais com duas casas decimais (D39).
   examples:
-    - cooperando:
+    - cooperado:
         id: 1
         matricula: C-0001
         nome: João Pereira
@@ -123,12 +123,12 @@ Extrato:
           status: PAGO
           data_repasse: null
       despesas:
-        - origem: COOPERANDO
+        - origem: COOPERADO
           categoria: COMBUSTIVEL
           descricao: Abastecimento semanal
           valor: 350
           data_despesa: '2026-11-05'
-          cooperando_id: 1
+          cooperado_id: 1
           contrato_id: 5
           id: 7
           registrado_por_id: 2
@@ -207,15 +207,15 @@ InadimplenciaItemCliente:
       multipleOf: 0.01
       minimum: 0
       description: Valor em reais com duas casas decimais (D39).
-InadimplenciaItemCooperando:
+InadimplenciaItemCooperado:
   type: object
   required:
-    - cooperando
+    - cooperado
     - quantidade
     - valor_total
   properties:
-    cooperando:
-      $ref: cooperandos.yaml#/CooperandoResumo
+    cooperado:
+      $ref: cooperados.yaml#/CooperadoResumo
     quantidade:
       type: integer
       minimum: 0
@@ -228,16 +228,16 @@ Inadimplencia:
   type: object
   required:
     - por_cliente
-    - por_cooperando
+    - por_cooperado
   properties:
     por_cliente:
       type: array
       items:
         $ref: '#/InadimplenciaItemCliente'
-    por_cooperando:
+    por_cooperado:
       type: array
       items:
-        $ref: '#/InadimplenciaItemCooperando'
+        $ref: '#/InadimplenciaItemCooperado'
   examples:
     - por_cliente:
         - cliente:
@@ -246,8 +246,8 @@ Inadimplencia:
             documento: '12345678000195'
           quantidade: 2
           valor_total: 4000
-      por_cooperando:
-        - cooperando:
+      por_cooperado:
+        - cooperado:
             id: 1
             matricula: C-0001
             nome: João Pereira

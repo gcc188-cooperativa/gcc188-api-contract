@@ -26,7 +26,7 @@ rules:
   recurso-tem-exemplo:
     description: Todo recurso do domínio tem ao menos um exemplo (D08).
     severity: error
-    given: $.components.schemas[Usuario,Cooperando,Cliente,Contrato,Pagamento,Despesa]
+    given: $.components.schemas[Usuario,Cooperado,Cliente,Contrato,Pagamento,Despesa]
     then: { field: examples, function: truthy }
   erro-tem-exemplo:
     description: Toda resposta de erro tem exemplo.

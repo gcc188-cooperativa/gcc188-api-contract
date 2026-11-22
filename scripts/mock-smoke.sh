@@ -17,9 +17,9 @@ PER='data_inicio=2026-12-01&data_fim=2026-12-31'
 check GET /auth/me 200
 check GET /usuarios 200
 check GET /usuarios/1 200
-check GET /cooperandos 200
-check GET /cooperandos/1 200
-check GET "/cooperandos/1/extrato?${PER}" 200
+check GET /cooperados 200
+check GET /cooperados/1 200
+check GET "/cooperados/1/extrato?${PER}" 200
 check GET /clientes 200
 check GET /contratos 200
 check GET /contratos/1 200

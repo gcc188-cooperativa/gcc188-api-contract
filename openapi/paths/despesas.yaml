@@ -6,7 +6,7 @@ despesas:
     description: '**Papéis:** ADMINISTRADOR, FINANCEIRO, MOTORISTA.
 
 
-      Financeiro e administrador lançam as da cooperativa; o motorista lança as próprias (origem COOPERANDO).'
+      Financeiro e administrador lançam as da cooperativa; o motorista lança as próprias (origem COOPERADO).'
     operationId: registrarDespesa
     x-papeis:
       - ADMINISTRADOR
@@ -67,10 +67,10 @@ despesas:
         description: Categoria.
         schema:
           $ref: ../components/schemas/despesas.yaml#/Categoria
-      - name: cooperando_id
+      - name: cooperado_id
         in: query
         required: false
-        description: Filtra por cooperando.
+        description: Filtra por cooperado.
         schema:
           type: integer
           format: int64
@@ -128,10 +128,10 @@ despesas_totais:
         description: Categoria.
         schema:
           $ref: ../components/schemas/despesas.yaml#/Categoria
-      - name: cooperando_id
+      - name: cooperado_id
         in: query
         required: false
-        description: Filtra por cooperando.
+        description: Filtra por cooperado.
         schema:
           type: integer
           format: int64

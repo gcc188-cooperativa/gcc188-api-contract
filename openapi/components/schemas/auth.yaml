@@ -59,7 +59,7 @@ SessaoUsuario:
         - integer
         - 'null'
       format: int64
-      description: Id do cooperando (MOTORISTA) ou do cliente (CLIENTE); nulo para ADMINISTRADOR e FINANCEIRO.
+      description: Id do cooperado (MOTORISTA) ou do cliente (CLIENTE); nulo para ADMINISTRADOR e FINANCEIRO.
     deve_trocar_senha:
       type: boolean
   examples:

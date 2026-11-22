@@ -2,7 +2,7 @@ Origem:
   type: string
   enum:
     - COOPERATIVA
-    - COOPERANDO
+    - COOPERADO
 Categoria:
   type: string
   enum:
@@ -15,8 +15,8 @@ Categoria:
 DespesaEntrada:
   type: object
   description:
-    'COOPERATIVA: sem cooperando_id e sem contrato_id. COOPERANDO: cooperando_id obrigatório; contrato_id
-    opcional e, se informado, do mesmo cooperando (RN08).'
+    'COOPERATIVA: sem cooperado_id e sem contrato_id. COOPERADO: cooperado_id obrigatório; contrato_id
+    opcional e, se informado, do mesmo cooperado (RN08).'
   required:
     - origem
     - categoria
@@ -40,7 +40,7 @@ DespesaEntrada:
     data_despesa:
       type: string
       format: date
-    cooperando_id:
+    cooperado_id:
       type:
         - integer
         - 'null'
@@ -53,12 +53,12 @@ DespesaEntrada:
       format: int64
       minimum: 1
   examples:
-    - origem: COOPERANDO
+    - origem: COOPERADO
       categoria: COMBUSTIVEL
       descricao: Abastecimento semanal
       valor: 350
       data_despesa: '2026-11-05'
-      cooperando_id: 1
+      cooperado_id: 1
       contrato_id: 5
 DespesaAtualizacao:
   allOf:
@@ -73,12 +73,12 @@ DespesaAtualizacao:
           minimum: 0
           description: Versão para concorrência otimista (D13). Obrigatória em PUT; divergência responde 409.
   examples:
-    - origem: COOPERANDO
+    - origem: COOPERADO
       categoria: COMBUSTIVEL
       descricao: Abastecimento semanal
       valor: 350
       data_despesa: '2026-11-05'
-      cooperando_id: 1
+      cooperado_id: 1
       contrato_id: 5
       versao: 0
 Despesa:
@@ -115,12 +115,12 @@ Despesa:
           format: date-time
           readOnly: true
   examples:
-    - origem: COOPERANDO
+    - origem: COOPERADO
       categoria: COMBUSTIVEL
       descricao: Abastecimento semanal
       valor: 350
       data_despesa: '2026-11-05'
-      cooperando_id: 1
+      cooperado_id: 1
       contrato_id: 5
       id: 7
       registrado_por_id: 2
@@ -157,12 +157,12 @@ DespesaPagina:
       minimum: 0
   examples:
     - content:
-        - origem: COOPERANDO
+        - origem: COOPERADO
           categoria: COMBUSTIVEL
           descricao: Abastecimento semanal
           valor: 350
           data_despesa: '2026-11-05'
-          cooperando_id: 1
+          cooperado_id: 1
           contrato_id: 5
           id: 7
           registrado_por_id: 2
