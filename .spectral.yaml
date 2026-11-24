@@ -1,9 +1,9 @@
 # Regras de estilo e completude do contrato (D08).
 extends: [spectral:oas]
 rules:
-  info-contact: off
+  info-contact: 'off'
   # Falso positivo do Spectral: `examples` de JSON Schema (OpenAPI 3.1) é um array de valores.
-  oas3-examples-value-or-externalValue: off
+  oas3-examples-value-or-externalValue: 'off'
   operation-description: error
   operation-operationId: error
   operation-tags: error
