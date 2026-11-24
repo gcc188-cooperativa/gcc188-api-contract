@@ -6,16 +6,20 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 TAG="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
 if [ -z "$TAG" ]; then echo "Sem tag anterior: nada a comparar."; exit 0; fi
-BASE_DIR="$(mktemp -d)"; trap 'rm -rf "$BASE_DIR"' EXIT
+BASE_DIR="$(mktemp -d)"
 git worktree add --detach "$BASE_DIR/base" "$TAG" >/dev/null
+# Remove o worktree pelo Git para não deixar registro órfão quando o script falha.
+trap 'git worktree remove --force "$BASE_DIR/base" >/dev/null 2>&1 || true; rm -rf "$BASE_DIR"' EXIT
 ( cd "$BASE_DIR/base" && ln -s "$OLDPWD/node_modules" node_modules && npx --no-install redocly bundle openapi/openapi.yaml -o "$BASE_DIR/base.yaml" >/dev/null )
 npm run --silent bundle
 VERSION="${TAG#v}"; MAJOR="${VERSION%%.*}"
+# Expressão em variável: o `!` final é interpretado como operador do `[[ ]]` se usado inline (bash 5.3).
+BREAKING_TITLE_REGEX='^[a-z]+(\([^)]*\))?!'
 if oasdiff breaking "$BASE_DIR/base.yaml" build/openapi.yaml --fail-on ERR; then
   echo "Nenhuma mudança incompatível em relação a $TAG."
 elif [ "$MAJOR" = "0" ]; then
   echo "AVISO: mudança incompatível antes da 1.0.0 (permitida, registre no changelog)."
-elif [[ "${PR_TITLE:-}" =~ ^[a-z]+(\([^)]*\))?! ]]; then
+elif [[ "${PR_TITLE:-}" =~ $BREAKING_TITLE_REGEX ]]; then
   echo "Mudança incompatível declarada com '!' no título do PR; será uma versão major."
 else
   echo "ERRO: mudança incompatível sem '!' no título do PR (ex.: feat(contratos)!: ...)."; exit 1
